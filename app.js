@@ -93,14 +93,7 @@ on("grille-matieres", "click", (e) => {
 });
 
 function creerNouvelleMatiere() {
-    const nom = window.prompt("Nom de la nouvelle matière :");
-    if (!nom?.trim()) return;
-    const description = window.prompt("Description (facultative) :") || "";
-    const matiere = Data.ajouterMatiere({
-        nom: nom.trim(),
-        description: description.trim(),
-    });
-    afficherVue("matiere", { matiereId: matiere.id });
+    ouvrirModalMatiere({ mode: "creation" });
 }
 
 on("btn-supprimer-matiere", "click", () => {
@@ -143,31 +136,11 @@ on("btn-supprimer-matiere", "click", () => {
 on("btn-retour-bibliotheque", "click", () => afficherVue("bibliotheque"));
 
 on("btn-modifier-matiere", "click", () => {
-    const matiere = Data.getMatiere(matiereOuverteId);
-    if (!matiere) return;
-
-    const nom = window.prompt("Nouveau nom :", matiere.nom);
-    if (!nom?.trim()) return;
-
-    const description =
-        window.prompt(
-            "Nouvelle description (facultative) :",
-            matiere.description,
-        ) || "";
-    Data.modifierMatiere(matiere.id, {
-        nom: nom.trim(),
-        description: description.trim(),
-    });
+    ouvrirModalMatiere({ mode: "edition", matiereId: matiereOuverteId });
 });
 
 on("btn-ajouter-module", "click", () => {
-    const titre = window.prompt("Titre du nouveau module :");
-    const description =
-        window.prompt(
-            "description (facultative) :",
-        ) || "";
-    if (titre?.trim())
-        Data.ajouterModule(matiereOuverteId, { titre: titre.trim(), description: description.trim()});
+    ouvrirModalModule({ mode: "creation", matiereId: matiereOuverteId });
 });
 
 on("ajout-select-matiere", "change", (e) => {
@@ -207,50 +180,7 @@ on("liste-modules", "click", (e) => {
 });
 
 on("btn-modifier-module", "click", () => {
-    const matiere = Data.getMatiere(matiereOuverteId);
-    if (!matiere?.modules?.length) {
-        window.alert("Cette matière ne contient encore aucun module à modifier.");
-        return;
-    }
-
-    let message = "Quel module souhaitez-vous modifier ? Entrez son numéro :\n\n";
-    matiere.modules.forEach((mod, index) => {
-        message += `${index + 1}. ${mod.titre}\n`;
-    });
-
-    const saisie = window.prompt(message);
-    if (saisie === null) return;
-
-    const index = parseInt(saisie.trim(), 10) - 1;
-    if (isNaN(index) || index < 0 || index >= matiere.modules.length) {
-        window.alert("Numéro de module invalide.");
-        return;
-    }
-
-    const moduleCible = matiere.modules[index];
-    const nouveauTitre = window.prompt(
-        "Corrigez le titre du module :",
-        moduleCible.titre,
-    );
-    if (nouveauTitre === null) return;
-
-    const nouvelleDescription = window.prompt(
-        "Modifiez la description (facultatif) :",
-        moduleCible.description,
-    );
-    const descriptionFinale =
-        nouvelleDescription !== null
-            ? nouvelleDescription
-            : moduleCible.description;
-
-    if (nouveauTitre.trim()) {
-        Data.modifierModule(matiereOuverteId, moduleCible.id, {
-            titre: nouveauTitre.trim(),
-            description: descriptionFinale,
-        });
-    } else {
-        window.alert("Le titre d'un module ne peut pas être vide.");
-    }
+    ouvrirModalModule({ mode: "edition", matiereId: matiereOuverteId });
 });
 
 on("btn-supprimer-module", "click", () => {
@@ -284,6 +214,195 @@ on("btn-supprimer-module", "click", () => {
         Data.supprimerModule(matiereOuverteId, cible.id);
     }
 });
+
+/* --- Popups / Modales Formulaires (Matières & Modules) --- */
+
+function ouvrirModalMatiere({ mode = "creation", matiereId = null } = {}) {
+    document.getElementById("popup-form-matiere")?.remove();
+
+    const estEdition = mode === "edition";
+    const matiere = estEdition ? Data.getMatiere(matiereId) : null;
+    if (estEdition && !matiere) return;
+
+    const titreModal = estEdition ? "Modifier la matière" : "Nouvelle matière";
+    const nomInitial = estEdition ? matiere.nom : "";
+    const descInitial = estEdition ? (matiere.description || "") : "";
+
+    const fond = document.createElement("div");
+    fond.id = "popup-form-matiere";
+    fond.className = "popup-fond";
+
+    fond.innerHTML = `
+        <div class="popup-pomodoro" role="dialog" aria-modal="true" aria-labelledby="titre-modale-matiere">
+            <div class="popup-entete">
+                <h2 id="titre-modale-matiere">${titreModal}</h2>
+                <button class="btn-fermer" id="btn-fermer-form-matiere" aria-label="Fermer">&times;</button>
+            </div>
+            <form id="form-matiere" style="margin-top: 15px;">
+                <label for="matiere-nom">Nom de la matière :</label>
+                <input type="text" id="matiere-nom" value="${nomInitial.replace(/"/g, '&quot;')}" placeholder="Ex: Mathématiques, Histoire..." required autocomplete="off" class="popup-input" />
+
+                <label for="matiere-desc" style="margin-top: 14px; display: block;">Description (facultative) :</label>
+                <textarea id="matiere-desc" placeholder="Résumé du programme, objectifs..." class="popup-input" style="width: 100%; min-height: 80px; resize: vertical; padding: 9px 11px; border: 1px solid var(--line); border-radius: var(--rayon-petit); background: white; margin-bottom: 22px;">${descInitial}</textarea>
+
+                <div class="boutons-minuteur">
+                    <button type="button" class="btn btn-secondaire" id="btn-annuler-form-matiere">Annuler</button>
+                    <button type="submit" class="btn btn-principal">${estEdition ? "Enregistrer" : "Créer"}</button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    document.body.appendChild(fond);
+
+    const inputNom = document.getElementById("matiere-nom");
+    inputNom?.focus();
+
+    const fermer = () => {
+        fond.remove();
+        window.removeEventListener("keydown", onEscape);
+    };
+
+    const onEscape = (ev) => {
+        if (ev.key === "Escape") fermer();
+    };
+
+    on("btn-fermer-form-matiere", "click", fermer);
+    on("btn-annuler-form-matiere", "click", fermer);
+    window.addEventListener("keydown", onEscape);
+
+    fond.addEventListener("click", (e) => {
+        if (e.target === fond) fermer();
+    });
+
+    on("form-matiere", "submit", (e) => {
+        e.preventDefault();
+        const nom = inputNom?.value.trim();
+        const description = document.getElementById("matiere-desc")?.value.trim() || "";
+
+        if (!nom) return;
+
+        if (estEdition) {
+            Data.modifierMatiere(matiereId, { nom, description });
+        } else {
+            const nouvelleMatiere = Data.ajouterMatiere({ nom, description });
+            if (nouvelleMatiere?.id) {
+                afficherVue("matiere", { matiereId: nouvelleMatiere.id });
+            }
+        }
+
+        fermer();
+    });
+}
+
+function ouvrirModalModule({ mode = "creation", matiereId, moduleId = null } = {}) {
+    document.getElementById("popup-form-module")?.remove();
+
+    const matiere = Data.getMatiere(matiereId);
+    if (!matiere) return;
+
+    const estEdition = mode === "edition";
+    if (estEdition && (!matiere.modules || matiere.modules.length === 0)) {
+        window.alert("Cette matière ne contient encore aucun module à modifier.");
+        return;
+    }
+
+    let moduleActuel = estEdition
+        ? (moduleId ? matiere.modules.find((m) => m.id === moduleId) : matiere.modules[0])
+        : null;
+
+    const titreModal = estEdition ? "Modifier un module" : "Nouveau module";
+
+    let selectModuleHtml = "";
+    if (estEdition) {
+        selectModuleHtml = `
+            <label for="module-select-edition">Module à modifier :</label>
+            <select id="module-select-edition" class="popup-input" style="width: 100%; margin-bottom: 14px; padding: 9px 11px; border: 1px solid var(--line); border-radius: var(--rayon-petit); background: white;">
+                ${matiere.modules.map((m) => `<option value="${m.id}" ${m.id === moduleActuel.id ? "selected" : ""}>${m.titre}</option>`).join("")}
+            </select>
+        `;
+    }
+
+    const fond = document.createElement("div");
+    fond.id = "popup-form-module";
+    fond.className = "popup-fond";
+
+    fond.innerHTML = `
+        <div class="popup-pomodoro" role="dialog" aria-modal="true" aria-labelledby="titre-modale-module">
+            <div class="popup-entete">
+                <h2 id="titre-modale-module">${titreModal}</h2>
+                <button class="btn-fermer" id="btn-fermer-form-module" aria-label="Fermer">&times;</button>
+            </div>
+            <form id="form-module" style="margin-top: 15px;">
+                ${selectModuleHtml}
+
+                <label for="module-titre">Titre du module :</label>
+                <input type="text" id="module-titre" value="${estEdition ? moduleActuel.titre.replace(/"/g, '&quot;') : ""}" placeholder="Ex: Chapitre 1 - Introduction..." required autocomplete="off" class="popup-input" />
+
+                <label for="module-desc" style="margin-top: 14px; display: block;">Description (facultative) :</label>
+                <textarea id="module-desc" placeholder="Détails, objectifs du module..." class="popup-input" style="width: 100%; min-height: 80px; resize: vertical; padding: 9px 11px; border: 1px solid var(--line); border-radius: var(--rayon-petit); background: white; margin-bottom: 22px;">${estEdition ? (moduleActuel.description || "") : ""}</textarea>
+
+                <div class="boutons-minuteur">
+                    <button type="button" class="btn btn-secondaire" id="btn-annuler-form-module">Annuler</button>
+                    <button type="submit" class="btn btn-principal">${estEdition ? "Enregistrer" : "Ajouter"}</button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    document.body.appendChild(fond);
+
+    const inputTitre = document.getElementById("module-titre");
+    const inputDesc = document.getElementById("module-desc");
+    const selectModule = document.getElementById("module-select-edition");
+
+    inputTitre?.focus();
+
+    if (selectModule) {
+        selectModule.addEventListener("change", (e) => {
+            const mod = matiere.modules.find((m) => m.id === e.target.value);
+            if (mod) {
+                moduleActuel = mod;
+                inputTitre.value = mod.titre;
+                inputDesc.value = mod.description || "";
+            }
+        });
+    }
+
+    const fermer = () => {
+        fond.remove();
+        window.removeEventListener("keydown", onEscape);
+    };
+
+    const onEscape = (ev) => {
+        if (ev.key === "Escape") fermer();
+    };
+
+    on("btn-fermer-form-module", "click", fermer);
+    on("btn-annuler-form-module", "click", fermer);
+    window.addEventListener("keydown", onEscape);
+
+    fond.addEventListener("click", (e) => {
+        if (e.target === fond) fermer();
+    });
+
+    on("form-module", "submit", (e) => {
+        e.preventDefault();
+        const titre = inputTitre?.value.trim();
+        const description = inputDesc?.value.trim() || "";
+
+        if (!titre) return;
+
+        if (estEdition) {
+            const targetId = selectModule ? selectModule.value : moduleActuel.id;
+            Data.modifierModule(matiereOuverteId, targetId, { titre, description });
+        } else {
+            Data.ajouterModule(matiereOuverteId, { titre, description });
+        }
+
+        fermer();
+    });
+}
 
 /* --- Actions Vue Calendrier --- */
 
