@@ -165,7 +165,6 @@ on("btn-ajouter-module", "click", () => {
     const description =
         window.prompt(
             "description (facultative) :",
-            module.description,
         ) || "";
     if (titre?.trim())
         Data.ajouterModule(matiereOuverteId, { titre: titre.trim(), description: description.trim()});
