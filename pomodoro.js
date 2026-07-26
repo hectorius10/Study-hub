@@ -1,4 +1,4 @@
-/* Study Hub - Minuteur Pomodoro & Sessions Focus */
+/* Study Hub - Minuteur Pomodoro et Sessions Focus */
 
 import * as Data from "./data.js";
 
