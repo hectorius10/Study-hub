@@ -454,6 +454,7 @@ select {
 .entete-matiere {
     display: flex;
     align-items: flex-start;
+    flex-wrap: wrap;
     justify-content: space-between;
     gap: 16px;
     margin-bottom: 28px;
@@ -479,6 +480,7 @@ select {
 .actions-matiere {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
     flex-shrink: 0;
 }
 
@@ -1068,6 +1070,19 @@ select {
     }
     #minuteur-affichage {
         font-size: 2.6rem;
+    }
+    .entete-matiere {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .actions-matiere {
+        width: 100%;
+    }
+
+    .actions-matiere .btn {
+        flex: 1;
     }
 }
 
