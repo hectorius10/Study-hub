@@ -2,7 +2,7 @@
    calendrier.js — Rendu et interactions du calendrier
    ============================================================ */
 
-import { getSessionsPourDate, getMatieres, ajouterSession, ajouterEvenement } from "./data.js";
+import { getSessionsPourDate, getMatieres, ajouterSession} from "./data.js";
 
 // État d'affichage (propre à cet écran)
 let anneeAffichee;
@@ -159,14 +159,6 @@ function ouvrirPopupAjout(dateISO, conteneur) {
             type: "pomodoro",
             matiereId: fd.get("matiereId")
         });
-        fond.remove();
-        renderCalendrier(conteneur);
-    });
-
-    fond.querySelector('[data-formulaire="echeance"]').addEventListener("submit", (e) => {
-        e.preventDefault();
-        const fd = new FormData(e.target);
-        ajouterEvenement({ date: dateISO, label: fd.get("label") });
         fond.remove();
         renderCalendrier(conteneur);
     });
