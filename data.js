@@ -441,26 +441,6 @@ export function ajouterSession({
     return session;
 }
 
-export function ajouterEvenement({ date, label }) {
-    if (!date || !label) {
-        console.error("[StudyHub] Date et libellé requis pour ajouter un événement.");
-        return null;
-    }
-
-    const evenement = {
-        id: genId("evt"),
-        date,
-        duree: 0,
-        type: "evenement",
-        matiereId: null,
-        tacheId: null,
-        label,
-    };
-
-    etat.sessions.push(evenement);
-    sauvegarder();
-    return evenement;
-}
 
 export function supprimerSession(sessionId) {
     if (!etat?.sessions) {
