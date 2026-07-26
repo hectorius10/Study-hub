@@ -605,6 +605,7 @@ select {
 
 .titre-tache {
     font-size: 0.92rem;
+    cursor: pointer;
 }
 
 .ligne-tache.faite .titre-tache {
