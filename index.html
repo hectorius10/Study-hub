@@ -140,7 +140,10 @@
         <div class="popup-pomodoro" role="dialog" aria-modal="true" aria-labelledby="popup-titre">
             <div class="popup-entete">
                 <h2 id="popup-titre">⏱ Session de Travail Profond</h2>
-                <button id="btn-fermer-popup" class="btn-fermer" aria-label="Fermer">✕</button>
+                <div class="popup-entete-actions">
+                    <button id="btn-son-pomodoro" class="btn-fermer" aria-label="Couper le son" title="Couper le son">🔊</button>
+                    <button id="btn-fermer-popup" class="btn-fermer" aria-label="Fermer">✕</button>
+                </div>
             </div>
 
             <div class="onglets-pomodoro">
@@ -168,6 +171,13 @@
             <p class="citation">« La discipline est le pont entre les buts et l'accomplissement. »</p>
         </div>
     </div>
+
+    <!--INDICATEUR FLOTTANT — visible quand le minuteur tourne en arrière-plan (popup fermée)-->
+    <button id="indicateur-flottant" class="indicateur-flottant" hidden aria-label="Reprendre la session en cours">
+        <span class="indicateur-flottant-pouls" aria-hidden="true"></span>
+        <span id="indicateur-flottant-icone">🍅</span>
+        <span id="indicateur-flottant-temps">25:00</span>
+    </button>
 
     <script type="module" src="./app.js"></script>
 </body>

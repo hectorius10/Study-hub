@@ -937,6 +937,12 @@ select {
     color: var(--navy);
 }
 
+.popup-entete-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
 .onglets-duree {
     display: flex;
     background: var(--cream-2);
@@ -1032,6 +1038,66 @@ select {
     font-style: italic;
     font-size: 0.82rem;
     color: var(--ink-muted);
+}
+
+
+/* --- Indicateur flottant du minuteur (arrière-plan) --- */
+
+.indicateur-flottant {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--navy);
+    color: var(--cream);
+    border: 1.5px solid var(--gold);
+    border-radius: 30px;
+    padding: 10px 20px 10px 14px;
+    font-family: var(--police-donnees);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 24px rgba(23, 42, 94, 0.35);
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.indicateur-flottant:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(23, 42, 94, 0.45);
+}
+
+.indicateur-flottant-pouls {
+    width: 9px;
+    height: 9px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--gold-light);
+    animation: pouls-indicateur-flottant 1.6s ease-in-out infinite;
+}
+
+@keyframes pouls-indicateur-flottant {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.35;
+        transform: scale(0.65);
+    }
+}
+
+@media (max-width: 780px) {
+    .indicateur-flottant {
+        bottom: 16px;
+        right: 16px;
+        padding: 8px 16px 8px 12px;
+        font-size: 0.85rem;
+    }
 }
 
 
