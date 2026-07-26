@@ -162,8 +162,13 @@ on("btn-modifier-matiere", "click", () => {
 
 on("btn-ajouter-module", "click", () => {
     const titre = window.prompt("Titre du nouveau module :");
+    const description =
+        window.prompt(
+            "description (facultative) :",
+            module.description,
+        ) || "";
     if (titre?.trim())
-        Data.ajouterModule(matiereOuverteId, { titre: titre.trim() });
+        Data.ajouterModule(matiereOuverteId, { titre: titre.trim(), description: description.trim()});
 });
 
 on("ajout-select-matiere", "change", (e) => {
