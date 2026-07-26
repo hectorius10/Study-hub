@@ -596,6 +596,7 @@ select {
     align-items: center;
     justify-content: center;
     transition: background var(--transition), border-color var(--transition);
+    cursor: pointer;
 }
 
 .ligne-tache.faite .case-tache {
