@@ -243,6 +243,8 @@ export function charger() {
         etat = structuredClone(donneesInitiales);
     }
 
+    if (!etat.sessions) etat.sessions = [];
+
     etat.matieres.forEach(recalculerProgres);
     sauvegarder();
     return etat;
@@ -314,7 +316,7 @@ export function getSessions() {
 }
 
 export function getSessionsPourDate(dateISO) {
-    return etat?.sessions.filter((s) => s.date === dateISO) || [];
+    return etat?.sessions?.filter((s) => s.date === dateISO) || [];
 }
 
 /* --- Actions & Mutations --- */
