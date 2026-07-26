@@ -1,6 +1,6 @@
-/* Study Hub - Styles principaux */
+/* Study Hub - Main Stylesheet */
 
-/* --- RESET & VARIABLES --- */
+/* --- Reset & Variables --- */
 
 *,
 *::before,
@@ -23,49 +23,41 @@ figure {
     padding: 0;
 }
 
-/* Fix pour éviter que [hidden] soit écrasé par un display: flex */
 [hidden] {
     display: none !important;
 }
 
 :root {
-    /* Thème principal */
+    /* Couleurs */
     --navy: #172a5e;
     --navy-soft: #26407f;
     --navy-pale: #5568a8;
     --cream: #faf6ec;
     --cream-2: #f3ecda;
     --cream-3: #ece2c4;
-
-    /* Accents */
     --gold: #c8931a;
     --gold-light: #f0c94e;
-
-    /* Textes & bordures */
     --ink: #2a2a28;
     --ink-muted: #6b6b62;
     --line: #ddd3ba;
-
-    /* États */
     --green: #2f8a4e;
     --green-pale: #e0f0e3;
     --rouge: #b91c1c;
     --rouge-soft: #dc2626;
     --rouge-pale: #fee2e2;
 
-    /* Fonts */
+    /* Typographies & Formes */
     --police-affichage: Georgia, "Times New Roman", serif;
     --police-texte: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --police-donnees: "Courier New", Courier, monospace;
-
-    /* UI */
     --rayon: 8px;
     --rayon-petit: 5px;
     --ombre-carte: 0 1px 2px rgba(28, 37, 65, 0.06), 0 4px 14px rgba(28, 37, 65, 0.05);
     --transition: 260ms cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* --- BASE --- */
+
+/* --- Base --- */
 
 body {
     font-family: var(--police-texte);
@@ -120,7 +112,6 @@ select:focus {
     box-shadow: 0 0 0 3px rgba(200, 147, 26, 0.12);
 }
 
-/* Custom arrow pour les select */
 select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23172a5e' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -199,7 +190,8 @@ select {
     width: 100%;
 }
 
-/* --- HEADER --- */
+
+/* --- Header --- */
 
 .entete {
     display: flex;
@@ -240,7 +232,7 @@ select {
     background: rgba(0, 0, 0, 0.18);
     padding: 4px;
     border-radius: 20px;
-    margin: 0 auto 0 auto;
+    margin: 0 auto;
 }
 
 .onglet-vue {
@@ -288,7 +280,8 @@ select {
     justify-content: center;
 }
 
-/* --- VUE BIBLIOTHÈQUE --- */
+
+/* --- Vue Bibliothèque --- */
 
 #vue-bibliotheque h1 {
     font-size: 1.9rem;
@@ -381,7 +374,7 @@ select {
     overflow: hidden;
 }
 
-.barre-progres>span {
+.barre-progres > span {
     display: block;
     height: 100%;
     background: linear-gradient(90deg, var(--gold), var(--gold-light));
@@ -393,8 +386,6 @@ select {
     font-size: 0.82rem;
     color: var(--ink-muted);
 }
-
-/* Card création de matière */
 
 .carte-creer {
     display: flex;
@@ -436,7 +427,8 @@ select {
     justify-content: center;
 }
 
-/* --- VUE MATIÈRE --- */
+
+/* --- Vue Matière --- */
 
 .fil-ariane {
     display: flex;
@@ -504,8 +496,6 @@ select {
     gap: 16px;
 }
 
-/* Modules */
-
 .bloc-module {
     background: white;
     border: 1px solid var(--line);
@@ -568,8 +558,6 @@ select {
     display: none;
 }
 
-/* Liste de tâches */
-
 .liste-taches {
     list-style: none;
 }
@@ -624,8 +612,6 @@ select {
     text-decoration: line-through;
 }
 
-/* Sidebar */
-
 .panneau-lateral {
     width: 300px;
     flex-shrink: 0;
@@ -678,7 +664,7 @@ select {
     gap: 14px;
 }
 
-.progres-chiffre>span {
+.progres-chiffre > span {
     font-family: var(--police-donnees);
     font-size: 1.7rem;
     font-weight: 700;
@@ -717,7 +703,8 @@ select {
     color: var(--navy);
 }
 
-/* --- VUE CALENDRIER --- */
+
+/* --- Vue Calendrier --- */
 
 .entete-calendrier {
     display: flex;
@@ -786,10 +773,12 @@ select {
 .case-jour {
     background: var(--cream);
     min-height: 100px;
+    min-width: 0;
     padding: 8px;
     display: flex;
     flex-direction: column;
     gap: 5px;
+    overflow: hidden;
     transition: background var(--transition), border-color var(--transition);
     cursor: pointer;
 }
@@ -801,7 +790,6 @@ select {
     z-index: 2;
 }
 
-/* Jours passés */
 .case-jour.passe {
     background: var(--cream-2);
 }
@@ -817,7 +805,6 @@ select {
     border-color: #d1c8ae;
 }
 
-/* Jour actuel */
 .case-jour:has(.numero-jour.aujourdhui) {
     background: var(--cream);
     box-shadow: inset 0 0 0 2px var(--gold-light);
@@ -825,16 +812,14 @@ select {
     z-index: 1;
 }
 
-/* Weekends */
 .case-jour.weekend {
-    background: repeating-linear-gradient( -45deg, var(--cream-2), var(--cream-2) 6px, var(--cream) 6px, var(--cream) 12px);
+    background: repeating-linear-gradient(-45deg, var(--cream-2), var(--cream-2) 6px, var(--cream) 6px, var(--cream) 12px);
 }
 
 .case-jour.passe.weekend {
-    background: repeating-linear-gradient( -45deg, var(--cream-3), var(--cream-3) 6px, var(--cream-2) 6px, var(--cream-2) 12px);
+    background: repeating-linear-gradient(-45deg, var(--cream-3), var(--cream-3) 6px, var(--cream-2) 6px, var(--cream-2) 12px);
 }
 
-/* Jours hors mois */
 .case-jour.hors-mois {
     background: var(--cream-3);
     opacity: 0.7;
@@ -844,7 +829,6 @@ select {
     color: #b8af94;
 }
 
-/* Éléments internes aux cases */
 .numero-jour {
     font-family: var(--police-donnees);
     font-size: 0.85rem;
@@ -899,7 +883,8 @@ select {
     text-decoration: underline;
 }
 
-/* --- POPUP POMODORO --- */
+
+/* --- Popup Pomodoro --- */
 
 .popup-fond {
     position: fixed;
@@ -1045,7 +1030,8 @@ select {
     color: var(--ink-muted);
 }
 
-/* --- RESPONSIVE & ACCESSIBILITÉ --- */
+
+/* --- Responsive & A11y --- */
 
 :focus-visible {
     outline: 2px solid var(--gold);
