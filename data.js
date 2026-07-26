@@ -9,6 +9,7 @@ const donneesInitiales = {
     matieres: [
         {
             id: "mat-1",
+            
             nom: "Maîtrise de JavaScript",
             description: "Structures de données avancées, closures et programmation asynchrone.",
             progres: 0,
